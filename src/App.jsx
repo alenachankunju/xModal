@@ -19,31 +19,44 @@ function App() {
   }
 
   const validateForm = () => {
+    const errors = []
+
     // Check for empty fields
-    for (const [key, value] of Object.entries(formData)) {
-      if (!value.trim()) {
-        alert(`Please fill in the ${key} field`)
-        return false
+    if (!formData.username.trim()) {
+      errors.push('Please fill in the username field')
+    }
+    if (!formData.email.trim()) {
+      errors.push('Please fill in the email field')
+    }
+    if (!formData.phone.trim()) {
+      errors.push('Please fill in the phone field')
+    }
+    if (!formData.dob.trim()) {
+      errors.push('Please fill in the date of birth field')
+    }
+
+    // Only proceed with other validations if fields are not empty
+    if (errors.length === 0) {
+      // Validate email
+      if (!formData.email.includes('@')) {
+        errors.push('Invalid email. Please check your email address.')
+      }
+
+      // Validate phone number
+      if (!/^\d{10}$/.test(formData.phone)) {
+        errors.push('Invalid phone number. Please enter a 10-digit phone number.')
+      }
+
+      // Validate date of birth
+      const dobDate = new Date(formData.dob)
+      const today = new Date()
+      if (dobDate > today) {
+        errors.push('Invalid date of birth. Please enter a past date.')
       }
     }
 
-    // Validate email
-    if (!formData.email.includes('@')) {
-      alert('Invalid email. Please check your email address.')
-      return false
-    }
-
-    // Validate phone number
-    if (!/^\d{10}$/.test(formData.phone)) {
-      alert('Invalid phone number. Please enter a 10-digit phone number.')
-      return false
-    }
-
-    // Validate date of birth
-    const dobDate = new Date(formData.dob)
-    const today = new Date()
-    if (dobDate > today) {
-      alert('Invalid date of birth. Please enter a past date.')
+    if (errors.length > 0) {
+      alert(errors[0]) // Show the first error message
       return false
     }
 
